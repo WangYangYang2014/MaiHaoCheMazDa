@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gradle-tooling-api-3.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/gradle-tooling-api-3.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

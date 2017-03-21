@@ -1,0 +1,45 @@
+<idea-plugin version="2">
+    <id>com.maihaoche.mazda</id>
+    <name>ModuleReset</name>
+    <version>1.0</version>
+    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">买好车</vendor>
+
+    <!--插件简介-->
+    <description><![CDATA[
+      该插件是用于卖好车项目模块化后的自动切换build模块.<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <!-- 版本更新信息-->
+    <change-notes><![CDATA[
+      新建.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
+    <!--<idea-version since-build="145.1617.8"/>-->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <!--扩展组件注册 要是用到applicationConfigurable即项目配置等就在这里注册-->
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <!--Action注册，比如在某个菜单下增加一个按钮就要在这注册 -->
+    <actions>
+        <!-- Add your actions here -->
+        <action id="ModuleSetMain" class="com.maihaoche.mazda.actions.ActionModuleSet"
+                text="module切换" description="set the module"
+                icon="/icons/ic_launcher.png"
+        >
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <!--设置快捷键-->
+            <!--<keyboard-shortcut keymap="$default" first-keystroke="shift M"/>-->
+        </action>
+    </actions>
+</idea-plugin>
