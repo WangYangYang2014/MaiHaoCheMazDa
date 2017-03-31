@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="guava-jdk5-17.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/guava-jdk5-17.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.7.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

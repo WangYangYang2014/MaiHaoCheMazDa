@@ -9,8 +9,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="gradle-base-services-groovy-3.4.1" level="project" />
-    <orderEntry type="library" name="gradle-tooling-api-3.3" level="project" />
-    <orderEntry type="library" name="gradle-base-services-3.3" level="project" />
+    <orderEntry type="library" name="gradle-tooling-api-3.4.1" level="project" />
+    <orderEntry type="library" name="gradle-base-services-3.4.1" level="project" />
+    <orderEntry type="library" name="guava-jdk5-17.0" level="project" />
+    <orderEntry type="library" name="slf4j-simple-1.7.25" level="project" />
   </component>
 </module>

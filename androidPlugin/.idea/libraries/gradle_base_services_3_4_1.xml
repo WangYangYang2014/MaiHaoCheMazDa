@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gradle-base-services-3.4.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/gradle-base-services-3.4.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
