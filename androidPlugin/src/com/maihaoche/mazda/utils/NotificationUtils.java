@@ -17,15 +17,19 @@ import com.intellij.ui.awt.RelativePoint;
  * Created by yang on 17/3/17.
  */
 public class NotificationUtils {
-    private static final NotificationGroup GROUP_DISPLAY_ID_INFO_BALLOON =
+    private static final NotificationGroup GROUP_DISPLAY_ID_INFO =
             new NotificationGroup("com.maihaoche.mazda",
                     NotificationDisplayType.NONE, true);
+
+    private static final NotificationGroup GROUP_DISPLAY_ID_INFO_BALLOON =
+            new NotificationGroup("com.maihaoche.mazda",
+                    NotificationDisplayType.BALLOON, true);
 
     public static void info(String infoMsg) {
         if (infoMsg == null || infoMsg.trim().equals("")) {
             return;
         }
-        com.intellij.notification.Notification notificationX = NotificationUtils.GROUP_DISPLAY_ID_INFO_BALLOON.createNotification(infoMsg, NotificationType.INFORMATION);
+        com.intellij.notification.Notification notificationX = NotificationUtils.GROUP_DISPLAY_ID_INFO.createNotification(infoMsg, NotificationType.INFORMATION);
         Notifications.Bus.notify(notificationX);
     }
 

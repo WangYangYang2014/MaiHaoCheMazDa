@@ -3,7 +3,6 @@ package com.maihaoche.mazda.actions;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.maihaoche.mazda.utils.NotificationUtils;
-import com.maihaoche.mazda.utils.PlatformUtils;
 import com.maihaoche.mazda.utils.gradle.GradleRunner;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.ResultHandler;
@@ -18,6 +17,7 @@ public class ActionModuleSet extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent event) {
+
         //启动一个新的进程来执行。
         try {
             //检查平台是否是Android Studio
@@ -25,14 +25,14 @@ public class ActionModuleSet extends AnAction {
             if (project == null) {
                 throw new NullPointerException("没有找到project");
             }
-            //判断平台，要是android studio 平台
             NotificationUtils.info("project不为空，进入actionPerform逻辑");
-            if (!PlatformUtils.isAndroidStudio()) {
-                NotificationUtils.popError("请在Android Studio 平台下使用此插件", event);
-                return;
-            } else {
-                NotificationUtils.info("当前IDE为Android Studio 平台");
-            }
+            //判断平台，要是android studio 平台
+//            if (!PlatformUtils.isAndroidStudio()) {
+//                NotificationUtils.popError("请在Android Studio 平台下使用此插件", event);
+//                return;
+//            } else {
+//                NotificationUtils.info("当前IDE为Android Studio 平台");
+//            }
             //执行任务
             if (currentAll) {
 //                GradleRunner.runGradleTasks(project, "tasks", new SyncProjectResultHandler(event));
@@ -40,7 +40,7 @@ public class ActionModuleSet extends AnAction {
                 event.getPresentation().setText("toFullModule");
                 currentAll = false;
             } else {
-//                    GradleRunner.runGradleTasks(project, "init", new SyncProjectResultHandler(event));
+//                GradleRunner.runGradleTasks(project, "help", new SyncProjectResultHandler(event));
                 GradleRunner.runGradleTasks(project, "turnToAllModule", new SyncProjectResultHandler(event));
                 event.getPresentation().setText("toSingleModule");
                 currentAll = true;

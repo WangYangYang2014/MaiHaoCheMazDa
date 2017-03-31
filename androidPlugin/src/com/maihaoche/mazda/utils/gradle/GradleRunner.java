@@ -38,6 +38,7 @@ public class GradleRunner {
             }
             BuildLauncher build = connection.newBuild();
             build.forTasks(taskName);
+            build.withArguments("--parallel", "--max-workers=8", "--configure-on-demand", "--offline");
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             build.setStandardOutput(outputStream);
             build.setStandardError(System.err);
