@@ -12,7 +12,7 @@ import org.gradle.tooling.ResultHandler;
 /**
  * Created by yang on 17/2/10.
  */
-public class ActionModuleSet extends AnAction {
+public class ActionSwitchModule extends AnAction {
 
     private static final String ACTION_TOOLS_MENU = "ToolsMenu";
     private static final String ACTION_ANDROID = "Android";
@@ -152,11 +152,11 @@ public class ActionModuleSet extends AnAction {
             NotificationUtils.info("Gradle任务\"" + mTaskName + "\"执行完毕，开始sync整工程", getEventProject(event));
             performSyncProject(event);
             if (currentAll) {
-                event.getPresentation().setText("toFullModule");
                 currentAll = false;
+                event.getPresentation().setText("切为全Module");
             } else {
-                event.getPresentation().setText("toSingleModule");
                 currentAll = true;
+                event.getPresentation().setText("切为单Module");
             }
         }
 

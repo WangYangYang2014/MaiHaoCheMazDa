@@ -1,19 +1,21 @@
 <idea-plugin version="2">
     <id>com.maihaoche.mazda</id>
-    <name>ModuleReset</name>
+    <name>Mazda</name>
     <version>1.0</version>
-    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">买好车</vendor>
+    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">卖好车</vendor>
 
     <!--插件简介-->
     <description><![CDATA[
-      该插件是用于卖好车项目模块化后的自动切换build模块.<br>
-      <em>most HTML tags may be used</em>
+     该插件是用于项目模块化后的切换模块的自动化.
+     Git：https://github.com/WangYangYang2014/MaiHaoCheMazDa
+     <br>
+     <em>卖好车</em>
     ]]></description>
 
     <!-- 版本更新信息-->
     <change-notes><![CDATA[
-      新建.<br>
-      <em>most HTML tags may be used</em>
+      Version 1.0 首次发布，初步实现了grale脚本+sync自动化。后续需要优化交互，并提供更多功能.<br>
+      <em>卖好车</em>
     ]]>
     </change-notes>
 
@@ -33,8 +35,8 @@
     <!--Action注册，比如在某个菜单下增加一个按钮就要在这注册 -->
     <actions>
         <!-- Add your actions here -->
-        <action id="AllModuleId" class="com.maihaoche.mazda.actions.ActionModuleSet"
-                text="toSingleModule" description="convert the modules"
+        <action id="SwitchModuleActionId" class="com.maihaoche.mazda.actions.ActionSwitchModule"
+                text="切为单Module" description="切换项目的module"
                 icon="/icons/ic_launcher.png"
         >
             <add-to-group group-id="ToolsMenu" anchor="first"/>
