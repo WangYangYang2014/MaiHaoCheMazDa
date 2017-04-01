@@ -1,8 +1,11 @@
 package com.maihaoche.mazda.actions;
 
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.maihaoche.mazda.utils.NotificationUtils;
+import com.maihaoche.mazda.utils.PlatformUtils;
 import com.maihaoche.mazda.utils.gradle.GradleRunner;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.ResultHandler;
@@ -13,45 +16,62 @@ import org.gradle.tooling.ResultHandler;
  */
 public class ActionModuleSet extends AnAction {
 
+    Application application = ApplicationManager.getApplication();
+
+
     boolean currentAll = true;//当前是全module
 
     @Override
     public void actionPerformed(AnActionEvent event) {
-
-        //启动一个新的进程来执行。
+        Presentation presentation = event.getPresentation();
+        presentation.setEnabled(false);
         try {
-            //检查平台是否是Android Studio
-            Project project = getEventProject(event);
-            if (project == null) {
-                throw new NullPointerException("没有找到project");
+            PlatformUtils.saveAll();
+            PlatformUtils.executeBackgroundTask(createModuleSetRunnable(event));
+        } catch (Throwable throwable) {
+            NotificationUtils.popError("插件运行出错，具体错误信息e:" + throwable.getMessage(), event);
+        } finally {
+            if (presentation != null) {
+                presentation.setEnabled(true);
             }
-            NotificationUtils.info("project不为空，进入actionPerform逻辑");
+        }
+    }
+
+    private Runnable createModuleSetRunnable(AnActionEvent event) {
+        Project project = event.getProject();
+        if (project == null) {
+            throw new NullPointerException("没有找到project");
+        }
+        return () -> {
+            //下面这句要注释掉。因为该句会使得任务在主线程执行。
+//            PlatformUtils.executeProjectChanges(project, () -> {
+            //检查平台是否是Android Studio、
+            NotificationUtils.info("project不为空，进入actionPerform逻辑", project);
+            NotificationUtils.getSingleton().infoToStatusBar("开始执行任务");
             //判断平台，要是android studio 平台
-//            if (!PlatformUtils.isAndroidStudio()) {
-//                NotificationUtils.popError("请在Android Studio 平台下使用此插件", event);
-//                return;
-//            } else {
-//                NotificationUtils.info("当前IDE为Android Studio 平台");
-//            }
+            String task0 = "";
+            String task1 = "";
+            if (!PlatformUtils.isAndroidStudio()) {
+                task0 = "tasks";
+                task1 = "help";
+                NotificationUtils.popError("请在Android Studio 平台下使用此插件", event);
+            } else {
+                task0 = "turnToSeekModule";
+                task1 = "turnToAllModule";
+                NotificationUtils.info("当前IDE为Android Studio 平台", project);
+            }
             //执行任务
             if (currentAll) {
-//                GradleRunner.runGradleTasks(project, "tasks", new SyncProjectResultHandler(event));
-                GradleRunner.runGradleTasks(project, "turnToSeekModule", new SyncProjectResultHandler(event));
+                GradleRunner.runGradleTasks(project, task0, new SyncProjectResultHandler(event));
                 event.getPresentation().setText("toFullModule");
                 currentAll = false;
             } else {
-//                GradleRunner.runGradleTasks(project, "help", new SyncProjectResultHandler(event));
-                GradleRunner.runGradleTasks(project, "turnToAllModule", new SyncProjectResultHandler(event));
+                GradleRunner.runGradleTasks(project, task1, new SyncProjectResultHandler(event));
                 event.getPresentation().setText("toSingleModule");
                 currentAll = true;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            NotificationUtils.popError("插件运行时抛出异常，具体错误信息e:" + e.getMessage(), event);
-        } catch (Error e) {
-            NotificationUtils.popError("插件运行出错，具体错误信息e:" + e.getMessage(), event);
-        }
-
+//            });
+        };
     }
 
 
@@ -88,6 +108,7 @@ public class ActionModuleSet extends AnAction {
     /**
      * 执行工具菜单下的 "Sync Project with Gradle Files"动作
      */
+
     private void performSyncProject(AnActionEvent event) {
         Project project = getEventProject(event);
         if (project == null) {
@@ -134,7 +155,7 @@ public class ActionModuleSet extends AnAction {
 
         @Override
         public void onComplete(Object o) {
-            NotificationUtils.info("任务执行完毕，任务执行输出:" + (o != null ? o.toString() : "null") + ",开始sync整工程");
+            NotificationUtils.info("任务执行完毕，任务执行输出:" + (o != null ? o.toString() : "null") + ",开始sync整工程", getEventProject(event));
             performSyncProject(event);
         }
 

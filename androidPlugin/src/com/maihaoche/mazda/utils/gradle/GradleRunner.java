@@ -45,7 +45,7 @@ public class GradleRunner {
             build.addProgressListener((ProgressListener) progressEvent -> {
                 String outResult = outputStream.toString();
                 if (outResult != null && outResult.length() > 0) {
-                    NotificationUtils.info(outResult);
+                    NotificationUtils.info(outResult, project);
                     outputStream.reset();
                 }
             });
@@ -95,17 +95,17 @@ public class GradleRunner {
                     //只打印这两个module的task
                     if (module.getName().equals("bentley")
                             || module.getName().equals("module_seek")) {
-                        NotificationUtils.info("  " + module);
-                        NotificationUtils.info("  module details:");
+                        NotificationUtils.info("  " + module, project);
+                        NotificationUtils.info("  module details:", project);
 
-                        NotificationUtils.info("    tasks from associated gradle projectIdea:");
+                        NotificationUtils.info("    tasks from associated gradle projectIdea:", project);
                         for (GradleTask task : module.getGradleProject().getTasks()) {
-                            NotificationUtils.info("      " + task.getName());
+                            NotificationUtils.info("      " + task.getName(), project);
                         }
                     }
                 }
             } else {
-                NotificationUtils.info("connection.getModel(IdeaProject.class)出错，没有找到相应的IdeaProject");
+                NotificationUtils.info("connection.getModel(IdeaProject.class)出错，没有找到相应的IdeaProject", project);
             }
         } finally {
             connection.close();
