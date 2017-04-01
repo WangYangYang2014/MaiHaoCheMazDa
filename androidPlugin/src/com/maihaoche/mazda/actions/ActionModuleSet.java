@@ -1,12 +1,10 @@
 package com.maihaoche.mazda.actions;
 
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.maihaoche.mazda.utils.NotificationUtils;
 import com.maihaoche.mazda.utils.PlatformUtils;
-import com.maihaoche.mazda.utils.gradle.GradleRunner;
+import com.maihaoche.mazda.utils.gradle.GradleTaskExecutor;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.ResultHandler;
 
@@ -16,16 +14,19 @@ import org.gradle.tooling.ResultHandler;
  */
 public class ActionModuleSet extends AnAction {
 
-    Application application = ApplicationManager.getApplication();
+    private static final String ACTION_TOOLS_MENU = "ToolsMenu";
+    private static final String ACTION_ANDROID = "Android";
+    private static final String ACTION_SYNC = "Sync Project with Gradle Files";
 
+    private boolean currentAll = true;//当前是全module
 
-    boolean currentAll = true;//当前是全module
 
     @Override
     public void actionPerformed(AnActionEvent event) {
         Presentation presentation = event.getPresentation();
         presentation.setEnabled(false);
         try {
+            //保存。相当于按下ctrl+s.必须执行在主线程
             PlatformUtils.saveAll();
             PlatformUtils.executeBackgroundTask(createModuleSetRunnable(event));
         } catch (Throwable throwable) {
@@ -37,40 +38,30 @@ public class ActionModuleSet extends AnAction {
         }
     }
 
+    /**
+     * 创建异步执行的任务
+     */
     private Runnable createModuleSetRunnable(AnActionEvent event) {
         Project project = event.getProject();
         if (project == null) {
             throw new NullPointerException("没有找到project");
         }
         return () -> {
-            //下面这句要注释掉。因为该句会使得任务在主线程执行。
-//            PlatformUtils.executeProjectChanges(project, () -> {
-            //检查平台是否是Android Studio、
-            NotificationUtils.info("project不为空，进入actionPerform逻辑", project);
-            NotificationUtils.getSingleton().infoToStatusBar("开始执行任务");
-            //判断平台，要是android studio 平台
-            String task0 = "";
-            String task1 = "";
+            NotificationUtils.info("Mazda开始执行", project);
+            //检查平台是否是Android Studio
+            String taskToSingle = "";
+            String taskToAll = "";
             if (!PlatformUtils.isAndroidStudio()) {
-                task0 = "tasks";
-                task1 = "help";
+                taskToSingle = "tasks";
+                taskToAll = "help";
                 NotificationUtils.popError("请在Android Studio 平台下使用此插件", event);
             } else {
-                task0 = "turnToSeekModule";
-                task1 = "turnToAllModule";
-                NotificationUtils.info("当前IDE为Android Studio 平台", project);
+                taskToSingle = "turnToSeekModule";
+                taskToAll = "turnToAllModule";
             }
             //执行任务
-            if (currentAll) {
-                GradleRunner.runGradleTasks(project, task0, new SyncProjectResultHandler(event));
-                event.getPresentation().setText("toFullModule");
-                currentAll = false;
-            } else {
-                GradleRunner.runGradleTasks(project, task1, new SyncProjectResultHandler(event));
-                event.getPresentation().setText("toSingleModule");
-                currentAll = true;
-            }
-//            });
+            String taskToRun = currentAll ? taskToSingle : taskToAll;
+            new GradleTaskExecutor(project, taskToRun, new SyncProjectResultHandler(event, taskToRun)).queue();
         };
     }
 
@@ -112,20 +103,20 @@ public class ActionModuleSet extends AnAction {
     private void performSyncProject(AnActionEvent event) {
         Project project = getEventProject(event);
         if (project == null) {
-            throw new NullPointerException("没有找到project");
+            throw new NullPointerException("performSyncProject中参数project不能为空");
         }
         ActionManager actionManager = ActionManager.getInstance();
-        DefaultActionGroup actionGroup = (DefaultActionGroup) actionManager.getAction("ToolsMenu");
+        DefaultActionGroup actionGroup = (DefaultActionGroup) actionManager.getAction(ACTION_TOOLS_MENU);
         boolean SyncFound = false;
         if (actionGroup != null) {
             AnAction[] anActions = actionGroup.getChildActionsOrStubs();
             if (anActions != null && anActions.length > 0) {
                 for (int i = 0; i < anActions.length; i++) {
-                    if ("Android".equals(anActions[i].getTemplatePresentation().getText())) {
+                    if (ACTION_ANDROID.equals(anActions[i].getTemplatePresentation().getText())) {
                         AnAction[] actions = showSubActions(anActions[i]);
                         if (actions != null && actions.length > 0) {
                             for (int j = 0; j < actions.length; j++) {
-                                if (actions[j] != null && "Sync Project with Gradle Files".equals(actions[j].getTemplatePresentation().getText())) {
+                                if (actions[j] != null && ACTION_SYNC.equals(actions[j].getTemplatePresentation().getText())) {
                                     SyncFound = true;
                                     actions[j].actionPerformed(event);
                                 }
@@ -135,33 +126,43 @@ public class ActionModuleSet extends AnAction {
                 }
             }
         } else {
-            throw new NullPointerException("没有找到ToolsMenu对应的子item");
+            throw new NullPointerException("没有找到id为" + ACTION_TOOLS_MENU + "的菜单栏");
         }
         if (!SyncFound) {
-            NotificationUtils.popError("在Tools菜单栏下没有找到action:Sync Project with Gradle Files", event);
+            NotificationUtils.error("在id为" + ACTION_TOOLS_MENU + "的菜单栏下没有找到Action：" + ACTION_ANDROID + "->" + ACTION_SYNC + "。");
         }
     }
 
 
     /**
+     * 执行gradle任务的结果回调类
      * 完成后，执行sync project 任务。
      */
     private class SyncProjectResultHandler implements ResultHandler {
         private AnActionEvent event;
+        private String mTaskName;
 
-        public SyncProjectResultHandler(AnActionEvent event) {
+        public SyncProjectResultHandler(AnActionEvent event, String mTaskName) {
             this.event = event;
+            this.mTaskName = mTaskName;
         }
 
         @Override
         public void onComplete(Object o) {
-            NotificationUtils.info("任务执行完毕，任务执行输出:" + (o != null ? o.toString() : "null") + ",开始sync整工程", getEventProject(event));
+            NotificationUtils.info("Gradle任务\"" + mTaskName + "\"执行完毕，开始sync整工程", getEventProject(event));
             performSyncProject(event);
+            if (currentAll) {
+                event.getPresentation().setText("toFullModule");
+                currentAll = false;
+            } else {
+                event.getPresentation().setText("toSingleModule");
+                currentAll = true;
+            }
         }
 
         @Override
         public void onFailure(GradleConnectionException e) {
-            NotificationUtils.error("执行命令行出错：e:" + e.getMessage());
+            NotificationUtils.error("执行Grale任务\"" + mTaskName + "\"时：e:" + e.getMessage());
         }
 
     }

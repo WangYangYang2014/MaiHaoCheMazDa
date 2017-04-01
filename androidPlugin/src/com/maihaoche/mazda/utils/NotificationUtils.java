@@ -59,8 +59,6 @@ public class NotificationUtils {
             return;
         }
         LOGGING_NOTIFICATION.createNotification(infoMsg, MessageType.INFO).notify(project);
-//        com.intellij.notification.Notification notificationX = NotificationUtils.GROUP_DISPLAY_ID_INFO_BALLOON.createNotification(infoMsg, NotificationType.INFORMATION);
-//        Notifications.Bus.notify(notificationX);
     }
 
     /**

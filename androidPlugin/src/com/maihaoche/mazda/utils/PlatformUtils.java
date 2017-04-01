@@ -24,7 +24,6 @@ public class PlatformUtils {
         return System.getProperty("os.name").startsWith("Windows");
     }
 
-
     /**
      * 判断，如果某个进程正在执行，则销毁掉。
      */
@@ -42,7 +41,7 @@ public class PlatformUtils {
     }
 
     /**
-     * 等project open，并且恢复后，执行该runnalbe任务
+     * 在异步线程池中执行任务，真正的异步任务。不会阻塞主线程
      */
     public static void executeBackgroundTask(@NotNull Runnable runnable) {
         //如果是UI线程。则必须加入队列才能执行
@@ -68,9 +67,7 @@ public class PlatformUtils {
 
     /**
      * 涉及到Project修改的操作。
-     *
-     * @param project
-     * @param changes
+     * 注意，该方法执行的任务会阻塞主线程！
      */
     public static void executeProjectChanges(@NotNull Project project, @NotNull Runnable changes) {
         if (ApplicationManager.getApplication().isWriteAccessAllowed()) {

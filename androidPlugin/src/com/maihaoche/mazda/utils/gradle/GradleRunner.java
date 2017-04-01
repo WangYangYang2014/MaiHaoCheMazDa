@@ -5,8 +5,6 @@ import com.maihaoche.mazda.utils.NotificationUtils;
 import org.gradle.tooling.*;
 import org.gradle.tooling.model.GradleProject;
 import org.gradle.tooling.model.GradleTask;
-import org.gradle.tooling.model.idea.IdeaModule;
-import org.gradle.tooling.model.idea.IdeaProject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,7 +27,6 @@ public class GradleRunner {
         //使用安装目录下的gradle运行task。
         ProjectConnection connection = GradleConnector.newConnector()
                 .forProjectDirectory(new File(project.getBasePath()))
-//                .useInstallation(new File("/Users/yang/zMySoftwares/gradle-3.4.1"))
                 .connect();
         try {
             if (!hasTaskInProject(connection, taskName)) {
@@ -79,37 +76,37 @@ public class GradleRunner {
         return false;
     }
 
-    /**
-     * 显示该project 的各个task 以及子module的各个task
-     * 该代码为Gradle Tooling API的sample代码，可以用来获得一个project中的所有module.getModules()方法。
-     *
-     * @param project
-     */
-    public static void showProjectTasks(Project project) {
-        GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(new File(project.getBasePath()));
-        ProjectConnection connection = connector.connect();
-        IdeaProject projectIdea = connection.getModel(IdeaProject.class);
-        try {
-            if (projectIdea != null) {
-                for (IdeaModule module : projectIdea.getModules()) {
-                    //只打印这两个module的task
-                    if (module.getName().equals("bentley")
-                            || module.getName().equals("module_seek")) {
-                        NotificationUtils.info("  " + module, project);
-                        NotificationUtils.info("  module details:", project);
-
-                        NotificationUtils.info("    tasks from associated gradle projectIdea:", project);
-                        for (GradleTask task : module.getGradleProject().getTasks()) {
-                            NotificationUtils.info("      " + task.getName(), project);
-                        }
-                    }
-                }
-            } else {
-                NotificationUtils.info("connection.getModel(IdeaProject.class)出错，没有找到相应的IdeaProject", project);
-            }
-        } finally {
-            connection.close();
-        }
-    }
+//    /**
+//     * 显示该project 的各个task 以及子module的各个task
+//     * 该代码为Gradle Tooling API的sample代码，可以用来获得一个project中的所有module.getModules()方法。
+//     *
+//     * @param project
+//     */
+//    public static void showProjectTasks(Project project) {
+//        GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(new File(project.getBasePath()));
+//        ProjectConnection connection = connector.connect();
+//        IdeaProject projectIdea = connection.getModel(IdeaProject.class);
+//        try {
+//            if (projectIdea != null) {
+//                for (IdeaModule module : projectIdea.getModules()) {
+//                    //只打印这两个module的task
+//                    if (module.getName().equals("bentley")
+//                            || module.getName().equals("module_seek")) {
+//                        NotificationUtils.info("  " + module, project);
+//                        NotificationUtils.info("  module details:", project);
+//
+//                        NotificationUtils.info("    tasks from associated gradle projectIdea:", project);
+//                        for (GradleTask task : module.getGradleProject().getTasks()) {
+//                            NotificationUtils.info("      " + task.getName(), project);
+//                        }
+//                    }
+//                }
+//            } else {
+//                NotificationUtils.info("connection.getModel(IdeaProject.class)出错，没有找到相应的IdeaProject", project);
+//            }
+//        } finally {
+//            connection.close();
+//        }
+//    }
 
 }
