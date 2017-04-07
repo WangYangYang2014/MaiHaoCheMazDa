@@ -2,20 +2,29 @@
     <id>com.maihaoche.mazda</id>
     <name>Mazda</name>
     <version>1.0</version>
-    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">卖好车</vendor>
+    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">MaiHaoChe.</vendor>
 
     <!--插件简介-->
     <description><![CDATA[
-     该插件是用于项目模块化后的切换模块的自动化.
+    This plugin is used for module management in an android gradle project.
+    You can choose which module to be included in the build project by click on the popup window which shows all the project modules.
+    A "Sync the project" is always after the module reset.
+    Which is different with the "Project Stucture",you can choose submodules to be compiled as AAR files and included in the main modules.
+    Usually, the "build.gradle" file of the main module should be configured for different situations, as application or submodule.
+    The application module is defined in local "gradle.properties" file as "singleModuleKey".
+    Project can use this property to configure the "build.gradle" of the application related modules.
+    <br>
      Git：https://github.com/WangYangYang2014/MaiHaoCheMazDa
      <br>
-     <em>卖好车</em>
+     <em>MaiHaoChe</em>
     ]]></description>
 
     <!-- 版本更新信息-->
     <change-notes><![CDATA[
-      Version 1.0 首次发布，初步实现了grale脚本+sync自动化。后续需要优化交互，并提供更多功能.<br>
-      <em>卖好车</em>
+      Version 1.0
+      As initially published,the plugin achieve the feature by a build in gradle task defined in our own project.
+      The next version would make it commonly configurable and useful.<br>
+      <em>MaiHaoChe</em>
     ]]>
     </change-notes>
 
