@@ -5,9 +5,15 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
 import com.intellij.util.ui.UIUtil;
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.io.File;
+import java.util.ArrayList;
 
 import static com.intellij.util.PlatformUtils.getPlatformPrefix;
 
@@ -86,6 +92,32 @@ public class PlatformUtils {
                 }
             });
         });
+    }
+
+    /**
+     * //     * 显示该project 的各个task 以及子module的各个task
+     * //     * 该代码为Gradle Tooling API的sample代码，可以用来获得一个project中的所有module.getModules()方法。
+     * //     *
+     * //     * @param project
+     * //
+     */
+    public static ArrayList<String> getProjectModules(Project project) {
+        ArrayList<String> mModuleNames = new ArrayList<>();
+        GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(new File(project.getBasePath()));
+        ProjectConnection connection = connector.connect();
+        IdeaProject projectIdea = connection.getModel(IdeaProject.class);
+        try {
+            if (projectIdea != null) {
+                for (IdeaModule module : projectIdea.getModules()) {
+                    mModuleNames.add(module.getName());
+                }
+            } else {
+                NotificationUtils.info("connection.getModel(IdeaProject.class)出错，没有找到相应的IdeaProject", project);
+            }
+        } finally {
+            connection.close();
+        }
+        return mModuleNames;
     }
 
 

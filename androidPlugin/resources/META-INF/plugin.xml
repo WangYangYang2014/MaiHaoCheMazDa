@@ -43,15 +43,21 @@
 
     <!--Action注册，比如在某个菜单下增加一个按钮就要在这注册 -->
     <actions>
-        <!-- Add your actions here -->
-        <action id="SwitchModuleActionId" class="com.maihaoche.mazda.actions.ActionSwitchModule"
-                text="切为单Module" description="切换项目的module"
+        <action id="ToAllModuleActionId" class="com.maihaoche.mazda.actions.ActionToAllModule"
+                text="切为全Module"
+                description="切换项目的module"
                 icon="/icons/ic_launcher.png"
         >
             <add-to-group group-id="ToolsMenu" anchor="first"/>
-            <!--设置快捷键-->
-            <!--<keyboard-shortcut keymap="$default" first-keystroke="shift M"/>-->
         </action>
+        <action id="SwitchModuleActionId" class="com.maihaoche.mazda.actions.ActionSwitchModule"
+                text="切为单Module"
+                description="切换项目的module"
+                icon="/icons/ic_launcher.png"
+        >
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ToAllModuleActionId"/>
+        </action>
+
     </actions>
 
 </idea-plugin>
