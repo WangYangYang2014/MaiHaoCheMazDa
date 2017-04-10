@@ -1,6 +1,10 @@
 package com.maihaoche.mazda.utils.gradle;
 
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.maihaoche.mazda.constant.MazdaConstants;
+import com.maihaoche.mazda.utils.MazdaUtils;
 import com.maihaoche.mazda.utils.NotificationUtils;
 import org.gradle.tooling.*;
 import org.gradle.tooling.model.GradleProject;
@@ -96,4 +100,40 @@ public class GradleRunner {
         return false;
     }
 
+    /**
+     * 创建异步执行的任务
+     */
+    public static Runnable createGradleWithSyncRunnable(AnActionEvent event, String taskName, ArrayList<String> properties) {
+        Project project = event.getProject();
+        if (project == null) {
+            throw new NullPointerException("没有找到project");
+        }
+        return () -> new GradleTaskExecutor(project, taskName, properties, new SyncProjectResultHandler(event, taskName)).queue();
+    }
+
+    /**
+     * 执行gradle任务的结果回调类
+     * 完成后，执行sync project 任务。
+     */
+    public static class SyncProjectResultHandler implements ResultHandler {
+        private AnActionEvent event;
+        private String mTaskName;
+
+        public SyncProjectResultHandler(AnActionEvent event, String mTaskName) {
+            this.event = event;
+            this.mTaskName = mTaskName;
+        }
+
+        @Override
+        public void onComplete(Object o) {
+            NotificationUtils.info("Gradle任务\"" + mTaskName + "\"执行完毕，开始sync整工程", AnAction.getEventProject(event));
+            MazdaUtils.performActionWithPath(event, MazdaConstants.ACTION_TOOLS_MENU, MazdaConstants.ACTION_ANDROID, MazdaConstants.ACTION_ANDROID_SYNC);
+        }
+
+        @Override
+        public void onFailure(GradleConnectionException e) {
+            NotificationUtils.error("执行Grale任务\"" + mTaskName + "\"时：e:" + e.getMessage());
+        }
+
+    }
 }

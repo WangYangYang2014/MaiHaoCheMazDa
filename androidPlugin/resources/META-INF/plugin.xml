@@ -43,21 +43,25 @@
 
     <!--Action注册，比如在某个菜单下增加一个按钮就要在这注册 -->
     <actions>
-        <action id="ToAllModuleActionId" class="com.maihaoche.mazda.actions.ActionToAllModule"
-                text="切为全Module"
-                description="切换项目的module"
-                icon="/icons/ic_launcher.png"
-        >
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
-        <action id="SwitchModuleActionId" class="com.maihaoche.mazda.actions.ActionSwitchModule"
-                text="切为单Module"
-                description="切换项目的module"
-                icon="/icons/ic_launcher.png"
-        >
-            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ToAllModuleActionId"/>
-        </action>
+        <group id="MazdaActionGroupId"
+               class="com.maihaoche.mazda.actions.ActionGroupMazda"
+               text="Mazda" popup="true" icon="/icons/ic_mazda.png">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
 
+            <action id="ConfigureActionId" class="com.maihaoche.mazda.actions.ActionConfigure"
+                    text="Configure"
+            >
+            </action>
+
+            <action id="ToAllModuleActionId" class="com.maihaoche.mazda.actions.ActionToAllModule"
+                    text="To All"
+            >
+            </action>
+            <action id="ToSingleModuleActionId" class="com.maihaoche.mazda.actions.ActionToSingleModule"
+                    text="To Single"
+            >
+            </action>
+        </group>
     </actions>
 
 </idea-plugin>

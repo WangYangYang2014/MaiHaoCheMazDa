@@ -21,7 +21,7 @@ public class GradleTaskExecutor extends Task.Backgroundable {
 
 
     public GradleTaskExecutor(@Nullable Project project, String mTask, ArrayList<String> mPropertyArgments, ResultHandler mResultHandler) {
-        super(project, "Mazda 正在切换module结构", false);
+        super(project, "Mazda 正在执行Gradle任务:" + mTask, false);
         this.mProject = project;
         this.mTask = mTask;
         this.mPropertyArgments = mPropertyArgments;
