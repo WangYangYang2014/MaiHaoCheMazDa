@@ -49,7 +49,7 @@ public class ActionConfigure extends BaseAction {
             NotificationUtils.info("清楚缓存成功", project);
             ActionGroupMazda.updateOutside(event);
         });
-        clearCacheBtn.setBorder(IdeBorderFactory.createEmptyBorder(4, 4, 4, 4));
+        clearCacheBtn.setBorder(IdeBorderFactory.createEmptyBorder(14, 4, 4, 4));
         content.add(clearCacheBtn, ExternalSystemUiUtil.getLabelConstraints(0));
         //显示dialog
         content.setBorder(IdeBorderFactory.createEmptyBorder(0, 0, 8, 0));
