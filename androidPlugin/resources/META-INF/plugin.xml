@@ -1,21 +1,36 @@
 <idea-plugin version="2">
     <id>com.maihaoche.mazda</id>
     <name>Mazda</name>
-    <version>1.0</version>
-    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">卖好车</vendor>
+    <version>2.0</version>
+    <vendor email="yangyang1@maihaoche.com" url="http://b.maihaoche.com/">MaiHaoChe.</vendor>
 
     <!--插件简介-->
     <description><![CDATA[
-     该插件是用于项目模块化后的切换模块的自动化.
+    This plugin is used for module management in an android gradle project.
+    You can choose which module to be included in the build project by click on the popup window which shows all the project modules.
+    A "Sync the project" is always after the module reset.
+    Which is different with the "Project Stucture",you can choose submodules to be compiled as AAR files and included in the main modules.
+    Usually, the "build.gradle" file of the main module should be configured for different situations, as application or submodule.
+    The application module is defined in local "gradle.properties" file as "singleModuleKey".
+    Project can use this property to configure the "build.gradle" of the application related modules.
+    <br>
      Git：https://github.com/WangYangYang2014/MaiHaoCheMazDa
      <br>
-     <em>卖好车</em>
+     <em>MaiHaoChe</em>
     ]]></description>
 
     <!-- 版本更新信息-->
     <change-notes><![CDATA[
-      Version 1.0 首次发布，初步实现了grale脚本+sync自动化。后续需要优化交互，并提供更多功能.<br>
-      <em>卖好车</em>
+      Version 2.0
+      This Version make big changes of the UI and make all the functions configurable.Two main functions are completed:
+      1. Choose one single module as the application main module and choose several submodules as AAR dependents located in libs folder. This function need a gradle task defined
+      in the build.gradle in root to change related values in gradle.properties , build the AAR file and move to main libs folder. The task and its related properties names
+      are configurable. Every setting of the single main module with dependent aar is cached and shown as an action in tools menu. This cache can be cleared with configure action.
+      2. Convert the whole project to all modules included in settings.gradle. Also need a task included in the build.gradle in root.
+      This primary plugin is now available.
+      Next goal is to merge all the tasks into our plugin. Hope this would not be hard.
+      <br>
+      <em>MaiHaoChe</em>
     ]]>
     </change-notes>
 
@@ -34,15 +49,25 @@
 
     <!--Action注册，比如在某个菜单下增加一个按钮就要在这注册 -->
     <actions>
-        <!-- Add your actions here -->
-        <action id="SwitchModuleActionId" class="com.maihaoche.mazda.actions.ActionSwitchModule"
-                text="切为单Module" description="切换项目的module"
-                icon="/icons/ic_launcher.png"
-        >
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-            <!--设置快捷键-->
-            <!--<keyboard-shortcut keymap="$default" first-keystroke="shift M"/>-->
-        </action>
+        <group id="MazdaActionGroupId"
+               class="com.maihaoche.mazda.actions.ActionGroupMazda"
+               text="Mazda" popup="true" icon="/icons/ic_mazda.png">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+
+            <action id="ConfigureActionId" class="com.maihaoche.mazda.actions.ActionConfigure"
+                    text="Configure"
+            >
+            </action>
+
+            <action id="ToAllModuleActionId" class="com.maihaoche.mazda.actions.ActionToAllModule"
+                    text="To All"
+            >
+            </action>
+            <action id="ToSingleModuleActionId" class="com.maihaoche.mazda.actions.ActionToSingleModule"
+                    text="To Single"
+            >
+            </action>
+        </group>
     </actions>
 
 </idea-plugin>
