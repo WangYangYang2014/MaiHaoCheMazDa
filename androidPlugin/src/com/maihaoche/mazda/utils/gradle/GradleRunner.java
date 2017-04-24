@@ -59,7 +59,6 @@ public class GradleRunner {
             for (int i = 0; i < buildArgs.size(); i++) {
                 argumentStr += " " + buildArgs.get(i);
             }
-            NotificationUtils.info("argumentsFinal的值为" + argumentStr, project);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             build.setStandardOutput(outputStream);
             build.setStandardError(System.err);

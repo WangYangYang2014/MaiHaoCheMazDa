@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
 import com.maihaoche.mazda.constant.MazdaConstants;
 import com.maihaoche.mazda.utils.MazdaUtils;
-import com.maihaoche.mazda.utils.NotificationUtils;
 import com.maihaoche.mazda.utils.PlatformUtils;
 import com.maihaoche.mazda.utils.gradle.GradleRunner;
 
@@ -51,7 +50,6 @@ public class ActionToSomeSingle extends BaseAction {
             boolean contain = false;
             if (savedSettings != null && savedSettings.length > 0) {
                 for (int i = 0; i < savedSettings.length; i++) {
-                    NotificationUtils.info("getActionId()的值为:" + getActionId(), event.getProject());
                     if (savedSettings[i].equals(getActionId())) {
                         contain = true;
                         break;
@@ -117,12 +115,9 @@ public class ActionToSomeSingle extends BaseAction {
     public static boolean registerAction(ActionToSomeSingle actionToSomeSingle, Project project) {
         //先注册
         if (ActionManager.getInstance().getAction(actionToSomeSingle.getActionId()) == null) {
-            NotificationUtils.info("注册id为" + actionToSomeSingle.getActionId() + "的action", project);
             ActionManager.getInstance().registerAction(actionToSomeSingle.getActionId(), actionToSomeSingle);
             return true;
-        } else {
-            NotificationUtils.info("已经注册了id为" + actionToSomeSingle.getActionId() + "的action", project);
-            return false;
         }
+        return false;
     }
 }
