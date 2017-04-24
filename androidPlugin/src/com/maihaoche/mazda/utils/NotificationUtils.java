@@ -36,8 +36,7 @@ public class NotificationUtils {
             new NotificationGroup("com.maihaoche.mazda",
                     NotificationDisplayType.BALLOON, true);
 
-    private static final NotificationGroup LOGGING_NOTIFICATION = NotificationGroup.logOnlyGroup("Gradle sync");
-
+    private static final NotificationGroup LOGGING_NOTIFICATION = new NotificationGroup("Gradle sync", NotificationDisplayType.NONE, true);
 
     /**
      * IntelliJ自带的API输出的info，android studio 会显示在底部statusbar下面。
